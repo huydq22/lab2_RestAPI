@@ -1,18 +1,27 @@
-const express = require('express');
-const app = express();
+const express = require("express")
+const bodyParser = require("body-parser")
+const connectDB = require("./config/db")
+const apiRoutes = require('./routes/api');
+// Initialize express app
+const app = express()
 
-//cài view engine
-app.set('view engine', 'ejs');
-app.set('views', './view');
+// Connect to database
+connectDB()
 
+// Middleware
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
-//route index
-app.get('/', (req, res) => {
-    res.render('index');
-    });
+// Routes
+app.use("/api", require("./routes/api"))
 
+// Default route
+app.get("/", (req, res) => {
+  res.send("Welcome to Fruit Management API")
+})
 
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-    });
+// Start server
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
